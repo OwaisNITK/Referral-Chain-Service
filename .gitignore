@@ -1,0 +1,16 @@
+/artifact/
+/build-support/
+/classes/
+/ide-classes/
+/export/
+/ivy/
+/lib/
+/reports/
+/war-test/
+/web/WEB-INF/classes/
+/web/WEB-INF/lib/
+
+/bin/
+/build/
+/.gradle/
+/.settings/

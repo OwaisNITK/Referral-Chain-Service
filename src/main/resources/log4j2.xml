@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <Configuration > -->
+<Configuration packages="com.onmobile.vol"
+	monitorInterval="60">
+
+	<Properties>
+		<Property name="log.basePath">/var/log/referral-chain-service</Property>
+		<Property name="log.backupBasePath">/var/log/referral-chain-service/backups</Property>
+		<Property name="log.rollover.datePattern">%d{yyyy-MM-dd}-%i</Property>
+		<Property name="log.rollover.size">500MB</Property>
+		<Property name="log.rollover.extension">zip</Property>
+		<Property name="log.level">INFO</Property>
+		<Property name="log.rollover.filecount">1000</Property>
+	</Properties>
+
+	<Appenders>
+
+		<RollingRandomAccessFile name="referralChainServiceRootAppender"
+			fileName="${log.basePath}/referral-chain-service.log"
+			filePattern="${log.backupBasePath}/referral-chain-service-${log.rollover.datePattern}.${log.rollover.extension}"
+			append="true" ignoreExceptions="false">
+			<PatternLayout>
+				<pattern>%d %5p [%t] (%F:%M():%L) - %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="${log.rollover.size}" />
+			</Policies>
+			<DefaultRolloverStrategy max="${log.rollover.filecount}" />
+		</RollingRandomAccessFile>
+		
+		
+		
+		<RollingRandomAccessFile name="smsDaemonLogger"
+			fileName="${log.basePath}/smsDaemon.log"
+			filePattern="${log.backupBasePath}/smsDaemon-${log.rollover.datePattern}.${log.rollover.extension}"
+			append="true" ignoreExceptions="false">
+			<PatternLayout>
+				<pattern>%d [%5p] [%t] - SMS_DAEMON - %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="${log.rollover.size}" />
+			</Policies>
+			<DefaultRolloverStrategy max="${log.rollover.filecount}" />
+		</RollingRandomAccessFile>
+		
+		
+		
+		<RollingRandomAccessFile name="childExpiryDaemonLogger"
+			fileName="${log.basePath}/childExpiryDaemon.log"
+			filePattern="${log.backupBasePath}/childExpiryDaemon-${log.rollover.datePattern}.${log.rollover.extension}"
+			append="true" ignoreExceptions="false">
+			<PatternLayout>
+				<pattern>%d [%5p] [%t] - CHILD_EXPIRY_DAEMON - %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="${log.rollover.size}" />
+			</Policies>
+			<DefaultRolloverStrategy max="${log.rollover.filecount}" />
+		</RollingRandomAccessFile>
+		
+		
+		<RollingFile name="RollingFileAppender" fileName="${log.basePath}/referral-chain-service-temp.log"
+			filePattern="${log.backupBasePath}/referral-chain-service-temp-${log.rollover.datePattern}.${log.rollover.extension}"
+			append="true" ignoreExceptions="false">
+			<PatternLayout>
+				<pattern>%d %5p [%t] (%F:%M():%L) - %m%n</pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
+				<SizeBasedTriggeringPolicy size="${log.rollover.size}" />
+			</Policies>
+			<DefaultRolloverStrategy max="${log.rollover.filecount}" />
+		</RollingFile>
+
+		<Console name="ConsoleAppender" target="SYSTEM_OUT" follow="true"
+			ignoreExceptions="false">
+			<PatternLayout>
+				<pattern>%highlight{%d %5p [%t] (%F:%M():%L)} - %m%n</pattern>
+			</PatternLayout>
+		</Console>
+
+		<Failover name="FailoverAppender" primary="referralChainServiceRootAppender"
+			ignoreExceptions="false">
+			<Failovers>
+				<AppenderRef ref="RollingFileAppender" />
+				<AppenderRef ref="ConsoleAppender" />
+			</Failovers>
+		</Failover>
+	</Appenders>
+
+	<Loggers>
+
+		<AsyncLogger name="com.onmobile.vol.referralchain"
+			additivity="false" level="debug" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="referralChainServiceRootAppender" />
+		</AsyncLogger>
+		
+		
+		<AsyncLogger name="org.springframework" additivity="false"
+			level="info" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="referralChainServiceRootAppender" />
+		</AsyncLogger>
+		
+		<AsyncLogger name="org.hibernate" additivity="false"
+			level="info" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="referralChainServiceRootAppender" />
+		</AsyncLogger>
+		
+		<AsyncLogger name="org.hibernate.SQL" additivity="false"
+			level="info" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="referralChainServiceRootAppender" />
+		</AsyncLogger>
+		
+		<AsyncLogger name="org.hibernate.type.descriptor.sql.BasicBinder" additivity="false"
+			level="debug" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="referralChainServiceRootAppender" />
+		</AsyncLogger>
+		
+		<AsyncLogger name="org.springframework.web.filter.CommonsRequestLoggingFilter" additivity="false"
+			level="debug" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="referralChainServiceRootAppender" />
+		</AsyncLogger>
+		
+		<AsyncLogger name="smsDaemonLogger"
+			additivity="false" level="debug" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="smsDaemonLogger" />
+		</AsyncLogger>
+		
+		
+		<AsyncLogger name="childExpiryDaemonLogger"
+			additivity="false" level="debug" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+			<AppenderRef ref="childExpiryDaemonLogger" />
+		</AsyncLogger>
+		
+		
+		
+		<Root additivity="false" level="debug" includeLocation="true">
+			<Appenderref ref="ConsoleAppender" />
+		</Root>
+
+	</Loggers>
+</Configuration>
